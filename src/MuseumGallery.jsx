@@ -112,7 +112,7 @@ export default function MuseumGallery() {
             animate={{ opacity: 1 }}
             className="text-pink-600/90 mt-2 text-sm md:text-base italic"
           >
-            Desliza o toca para ver nuestra historia ✨
+            Toca la pantalla y desliza hacia la izquierda... ✨
           </motion.p>
         </header>
 
