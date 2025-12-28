@@ -1,21 +1,24 @@
 import { motion } from "framer-motion";
 
 const moments = [
-  { id: 1, title: "TU", date: "12 Oct 2023", img: "/images/uno.jpeg" },
-  { id: 2, title: "TU", date: "05 Nov 2023", img: "/images/dos.jpeg" },
-  { id: 3, title: "TU", date: "20 Dic 2023", img: "/images/tres.jpeg" },
-  { id: 4, title: "TU", date: "Ene 2024", img: "/images/cuatro.jpeg" },
-  { id: 5, title: "TU", date: "Feb 2024", img: "/images/cinco.jpeg" },
-  { id: 6, title: "TU", date: "Mar 2024", img: "/images/seis.jpeg" },
-  { id: 8, title: "TU", date: "May 2024", img: "/images/ocho.jpeg" },
-  { id: 9, title: "TU", date: "Jun 2024", img: "/images/nueve.jpeg" },
-  { id: 10, title: "TU", date: "Jul 2024", img: "/images/diez.jpeg" },
-  { id: 11, title: "TU", date: "Ago 2024", img: "/images/once.jpeg" },
-  { id: 12, title: "TU", date: "Sep 2024", img: "/images/doce.jpeg" },
-  { id: 13, title: "TU", date: "Oct 2024", img: "/images/trece.jpeg" },
-  { id: 14, title: "TU", date: "Nov 2024", img: "/images/catorce.jpeg" },
-  { id: 15, title: "TU", date: "Dic 2024", img: "/images/quince.jpeg" },
-  { id: 16, title: "TU", date: "Ene 2025", img: "/images/dieciseis.jpeg" },
+  { id: 1, title: "Respiración del Amor", date: "En este mundo de sombras y demonios, tú eres mi luz constante.", img: "/images/uno.jpeg" },
+  { id: 2, title: "Expansión de Dominio", date: "Un espacio donde solo existimos nosotros, sin tiempo ni final.", img: "/images/dos.jpeg" },
+  { id: 3, title: "Vínculo de Glicinias", date: "Como flores que protegen, tu presencia me da paz en la tormenta.", img: "/images/tres.jpeg" },
+  { id: 4, title: "Destello Negro", date: "Un instante a tu lado multiplica mis latidos por la eternidad.", img: "/images/cuatro.jpeg" },
+  { id: 5, title: "Danza del Dios del Fuego", date: "Mi corazón arde con la fuerza de mil soles cuando me miras.", img: "/images/cinco.jpeg" },
+  { id: 6, title: "Ritual Maldito de Unión", date: "Nuestras almas se entrelazaron con un hilo que nadie puede cortar.", img: "/images/seis.jpeg" },
+  { id: 8, title: "El Infinito de Gojo", date: "Ni toda la distancia del universo podría alejarnos realmente.", img: "/images/ocho.jpeg" },
+  { id: 9, title: "Postura Final: Calma", date: "Tus brazos son el único refugio donde encuentro silencio y paz.", img: "/images/nueve.jpeg" },
+  { id: 10, title: "Energía Maldita Positiva", date: "Tienes el poder de sanar cualquier herida con solo una sonrisa.", img: "/images/diez.jpeg" },
+  { id: 11, title: "Cazador de Sueños", date: "En este tablero del destino, mi única misión es cuidarte a ti.", img: "/images/once.jpeg" },
+  { id: 12, title: "Técnica Imaginaria: Púrpura", date: "La mezcla perfecta entre tu caos y mi calma crea nuestra magia.", img: "/images/doce.jpeg" },
+  { id: 13, title: "Lazos de Sangre y Alma", date: "Como Tanjiro y Nezuko, nuestro lazo es lo más fuerte que existe.", img: "/images/trece.jpeg" },
+  { id: 14, title: "Rika y Yuta", date: "Prometo amarte más allá de esta vida, en cada rincón del tiempo.", img: "/images/catorce.jpeg" },
+  { id: 15, title: "Aliento de Luna", date: "Bajo la misma noche, nuestras sombras bailan en perfecta sintonía.", img: "/images/quince.jpeg" },
+  { id: 16, title: "Hechicería de Amor", date: "No hay maldición que pueda contra la fuerza de lo que siento.", img: "/images/dieciseis.jpeg" },
+  { id: 17, title: "Mariposa de Shinobu", date: "Vuelas en mis pensamientos, llenando de colores mi realidad.", img: "/images/diecisiete.jpeg" },
+  { id: 18, title: "El Rey de mis Maldiciones", date: "Eres la única persona que tiene el control total de mi corazón.", img: "/images/diecinueve.jpeg" },
+  { id: 19, title: "Nuestro Final Feliz", date: "Si la vida es una batalla, quiero ganarla siempre a tu lado.", img: "/images/veinte.jpeg" },
 ];
 
 const itemVariants = {
@@ -61,7 +64,7 @@ export default function MuseumGallery() {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-6xl font-serif text-pink-700 drop-shadow-sm"
           >
-            Museum of Us
+            Para ti pug...
           </motion.h1>
 
           <motion.p
@@ -69,7 +72,7 @@ export default function MuseumGallery() {
             animate={{ opacity: 1 }}
             className="text-pink-600/90 mt-1 md:mt-2 text-sm md:text-base italic"
           >
-            Desliza para recordar
+            Desliza...
           </motion.p>
         </header>
 
