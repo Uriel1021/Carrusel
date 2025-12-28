@@ -2,24 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* styles.css o en la sección de <style> de tu componente principal */
-
-/* Asegura que el elemento html y body ocupen toda la altura y ancho de la ventana */
 html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-/* Aplica el color de fondo rosa al elemento raíz (o body) para que cubra toda la pantalla */
-body {
-    background-color: #ffc0cb; /* O el código de color rosa exacto que estés usando */
-}
-
-/* Si estás usando un contenedor principal en tu componente React, asegúrate que también cubra todo */
-.container-principal {
-    min-height: 100vh; /* Ocupa al menos el 100% de la altura de la ventana */
-    width: 100%;
-    background-color: #ffc0cb; /* Redundancia para asegurar el color */
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent; /* CLAVE */
 }
