@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 const moments = [
   { id: 1, title: "Respiración del Amor", date: "En este mundo de sombras y demonios, tú eres mi luz constante.", img: "/images/uno.jpeg" },
@@ -32,17 +33,49 @@ const itemVariants = {
 };
 
 export default function MuseumGallery() {
+  const audioRef = useRef(null);
+  const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    const startMusic = () => {
+      if (audioRef.current) {
+        audioRef.current.play().catch((error) => {
+          console.log("Esperando una interacción más clara para reproducir...");
+        });
+        
+        // Una vez que empieza a sonar, removemos los listeners para que no se ejecute más veces
+        scrollContainerRef.current?.removeEventListener("scroll", startMusic);
+        scrollContainerRef.current?.removeEventListener("touchstart", startMusic);
+        window.removeEventListener("wheel", startMusic);
+      }
+    };
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      // Listener para scroll en el contenedor (Desktop/Mouse)
+      container.addEventListener("scroll", startMusic);
+      // Listener para cuando empiezan a tocar la pantalla (Móvil)
+      container.addEventListener("touchstart", startMusic);
+      // Listener global por si usan la rueda del ratón sin estar encima del contenedor
+      window.addEventListener("wheel", startMusic);
+    }
+
+    return () => {
+      container?.removeEventListener("scroll", startMusic);
+      container?.removeEventListener("touchstart", startMusic);
+      window.removeEventListener("wheel", startMusic);
+    };
+  }, []);
+
   return (
     <div className="relative w-full min-h-[100dvh] overflow-hidden">
       
+      {/* Audio oculto - Cambia la ruta por tu archivo real */}
+      <audio ref={audioRef} src="/music/cancion.mp3" loop />
+
       {/* Fondo adaptativo */}
-    <div
-      className="
-      fixed inset-0 -z-10
-      bg-gradient-to-br from-pink-100 via-pink-200 to-rose-300
-      md:absolute
-      "
-    />
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-pink-100 via-pink-200 to-rose-300 md:absolute" />
+
       {/* Ocultar scrollbar */}
       <style jsx global>{`
         .hide-scrollbar::-webkit-scrollbar {
@@ -58,7 +91,7 @@ export default function MuseumGallery() {
       <div className="relative flex flex-col min-h-[100dvh] pt-safe">
 
         {/* Header */}
-        <header className="text-center mb-2 md:mb-6 px-4 z-10 flex-shrink-0">
+        <header className="text-center mb-2 md:mb-6 px-4 z-10 flex-shrink-0 pt-8">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,14 +105,17 @@ export default function MuseumGallery() {
             animate={{ opacity: 1 }}
             className="text-pink-600/90 mt-1 md:mt-2 text-sm md:text-base italic"
           >
-            Desliza...
+            Desliza para ver nuestros momentos ✨
           </motion.p>
         </header>
 
         {/* Carrusel */}
         <div className="flex-grow flex items-start md:items-center w-full pb-4 md:pb-6">
           <div className="mx-auto w-full md:w-[calc(100%-100px)] max-w-[1600px] h-full flex items-center">
-            <div className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 px-8 py-4 hide-scrollbar w-full items-center">
+            <div 
+              ref={scrollContainerRef}
+              className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 px-8 py-4 hide-scrollbar w-full items-center cursor-grab active:cursor-grabbing"
+            >
               
               {moments.map((moment, index) => (
                 <motion.div
@@ -100,7 +136,7 @@ export default function MuseumGallery() {
                   "
                 >
                   {/* Imagen */}
-                  <div className="h-[72%] w-full relative overflow-hidden">
+                  <div className="h-[70%] w-full relative overflow-hidden">
                     <img
                       src={moment.img}
                       alt={moment.title}
@@ -109,18 +145,18 @@ export default function MuseumGallery() {
                   </div>
 
                   {/* Info */}
-                  <div className="absolute bottom-0 w-full h-[28%] bg-white/50 backdrop-blur-md flex flex-col justify-center items-center p-2 border-t border-white/30">
-                    <h3 className="text-2xl md:text-3xl font-serif text-pink-900 leading-tight">
+                  <div className="absolute bottom-0 w-full h-[30%] bg-white/50 backdrop-blur-md flex flex-col justify-center items-center p-4 border-t border-white/30 text-center">
+                    <h3 className="text-xl md:text-2xl font-serif text-pink-900 leading-tight">
                       {moment.title}
                     </h3>
-                    <span className="mt-2 px-3 py-1 bg-pink-500/20 text-pink-800 text-xs font-bold rounded-full uppercase">
+                    <p className="mt-3 text-pink-800 text-xs md:text-sm font-medium italic px-2">
                       {moment.date}
-                    </span>
+                    </p>
                   </div>
                 </motion.div>
               ))}
 
-              <div className="w-4 flex-shrink-0" />
+              <div className="w-10 flex-shrink-0" />
             </div>
           </div>
         </div>
