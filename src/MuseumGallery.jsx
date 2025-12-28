@@ -34,64 +34,72 @@ const itemVariants = {
 
 export default function MuseumGallery() {
   const audioRef = useRef(null);
-  const scrollContainerRef = useRef(null);
 
   useEffect(() => {
-    const startMusic = () => {
-      if (audioRef.current) {
-        audioRef.current.play().catch((error) => {
-          console.log("Esperando una interacción más clara para reproducir...");
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    // Forzamos volumen al máximo
+    audio.volume = 1.0;
+
+    const playMusic = () => {
+      // Intentamos reproducir inmediatamente
+      audio.play()
+        .then(() => {
+          console.log("¡Reproducción exitosa!");
+          // Si tuvo éxito, limpiamos todos los eventos para liberar memoria
+          cleanEvents();
+        })
+        .catch((err) => {
+          // Si falla, no ponemos log de espera, simplemente lo dejamos listo
+          // para el siguiente micro-movimiento del usuario
+          console.log("Reintentando al siguiente toque...");
         });
-        
-        // Una vez que empieza a sonar, removemos los listeners para que no se ejecute más veces
-        scrollContainerRef.current?.removeEventListener("scroll", startMusic);
-        scrollContainerRef.current?.removeEventListener("touchstart", startMusic);
-        window.removeEventListener("wheel", startMusic);
-      }
     };
 
-    const container = scrollContainerRef.current;
-    if (container) {
-      // Listener para scroll en el contenedor (Desktop/Mouse)
-      container.addEventListener("scroll", startMusic);
-      // Listener para cuando empiezan a tocar la pantalla (Móvil)
-      container.addEventListener("touchstart", startMusic);
-      // Listener global por si usan la rueda del ratón sin estar encima del contenedor
-      window.addEventListener("wheel", startMusic);
-    }
-
-    return () => {
-      container?.removeEventListener("scroll", startMusic);
-      container?.removeEventListener("touchstart", startMusic);
-      window.removeEventListener("wheel", startMusic);
+    const cleanEvents = () => {
+      window.removeEventListener("click", playMusic);
+      window.removeEventListener("touchstart", playMusic);
+      window.removeEventListener("scroll", playMusic);
+      window.removeEventListener("wheel", playMusic);
+      window.removeEventListener("mousedown", playMusic);
+      // Removemos del contenedor también
+      const container = document.getElementById("scroll-container");
+      container?.removeEventListener("scroll", playMusic);
     };
+
+    // Listeners en window para que cualquier contacto active el audio
+    window.addEventListener("click", playMusic);
+    window.addEventListener("touchstart", playMusic, { passive: true });
+    window.addEventListener("scroll", playMusic, { passive: true });
+    window.addEventListener("wheel", playMusic, { passive: true });
+    window.addEventListener("mousedown", playMusic);
+
+    return () => cleanEvents();
   }, []);
 
   return (
     <div className="relative w-full min-h-[100dvh] overflow-hidden">
       
-      {/* Audio oculto - Cambia la ruta por tu archivo real */}
-      <audio ref={audioRef} src="/music/cancion.mp3" loop />
+      {/* Audio con carga prioritaria */}
+      <audio 
+        ref={audioRef} 
+        src="/music/cancion.mp3" 
+        loop 
+        preload="auto"
+      />
 
-      {/* Fondo adaptativo */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-pink-100 via-pink-200 to-rose-300 md:absolute" />
+      {/* Fondo */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-pink-100 via-pink-200 to-rose-300" />
 
-      {/* Ocultar scrollbar */}
       <style jsx global>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
-      {/* Contenido */}
-      <div className="relative flex flex-col min-h-[100dvh] pt-safe">
+      <div className="relative flex flex-col min-h-[100dvh]">
 
-        {/* Header */}
-        <header className="text-center mb-2 md:mb-6 px-4 z-10 flex-shrink-0 pt-8">
+        <header className="text-center mb-2 md:mb-6 px-4 z-10 flex-shrink-0 pt-10">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,24 +107,21 @@ export default function MuseumGallery() {
           >
             Para ti pug...
           </motion.h1>
-
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-pink-600/90 mt-1 md:mt-2 text-sm md:text-base italic"
+            className="text-pink-600/90 mt-2 text-sm md:text-base italic"
           >
-            Desliza para ver nuestros momentos ✨
+            Desliza o toca para ver nuestra historia ✨
           </motion.p>
         </header>
 
-        {/* Carrusel */}
-        <div className="flex-grow flex items-start md:items-center w-full pb-4 md:pb-6">
-          <div className="mx-auto w-full md:w-[calc(100%-100px)] max-w-[1600px] h-full flex items-center">
+        <div className="flex-grow flex items-center w-full pb-10">
+          <div className="mx-auto w-full max-w-[1600px] h-full flex items-center">
             <div 
-              ref={scrollContainerRef}
-              className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 md:gap-8 px-8 py-4 hide-scrollbar w-full items-center cursor-grab active:cursor-grabbing"
+              id="scroll-container"
+              className="flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-6 md:gap-10 px-10 py-4 hide-scrollbar w-full items-center"
             >
-              
               {moments.map((moment, index) => (
                 <motion.div
                   key={moment.id}
@@ -124,43 +129,30 @@ export default function MuseumGallery() {
                   initial="hidden"
                   animate="visible"
                   transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="
-                    relative flex-shrink-0 snap-center
-                    w-[80vw] max-w-[300px] md:w-[380px]
-                    h-[70dvh] md:h-[520px]
-                    bg-white/60 backdrop-blur-xl
-                    border border-white/40
-                    rounded-[2rem] shadow-xl
-                    overflow-hidden group
-                  "
+                  whileHover={{ scale: 1.02 }}
+                  className="relative flex-shrink-0 snap-center w-[75vw] max-w-[320px] md:w-[400px] h-[60dvh] md:h-[550px] bg-white/70 backdrop-blur-2xl border border-white/50 rounded-[2.5rem] shadow-2xl overflow-hidden group"
                 >
-                  {/* Imagen */}
                   <div className="h-[70%] w-full relative overflow-hidden">
                     <img
                       src={moment.img}
                       alt={moment.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 pointer-events-none"
                     />
                   </div>
-
-                  {/* Info */}
-                  <div className="absolute bottom-0 w-full h-[30%] bg-white/50 backdrop-blur-md flex flex-col justify-center items-center p-4 border-t border-white/30 text-center">
-                    <h3 className="text-xl md:text-2xl font-serif text-pink-900 leading-tight">
+                  <div className="absolute bottom-0 w-full h-[30%] bg-white/40 backdrop-blur-md flex flex-col justify-center items-center p-6 border-t border-white/40 text-center">
+                    <h3 className="text-xl md:text-2xl font-serif text-pink-900 leading-tight mb-2">
                       {moment.title}
                     </h3>
-                    <p className="mt-3 text-pink-800 text-xs md:text-sm font-medium italic px-2">
+                    <p className="text-pink-800 text-xs md:text-sm font-medium italic leading-relaxed px-2">
                       {moment.date}
                     </p>
                   </div>
                 </motion.div>
               ))}
-
-              <div className="w-10 flex-shrink-0" />
+              <div className="w-[15vw] flex-shrink-0" />
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
